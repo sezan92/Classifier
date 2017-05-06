@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<MNISTHOG type_id="opencv-object-detector-hog">
+  <winSize>
+    28 28</winSize>
+  <blockSize>
+    16 16</blockSize>
+  <blockStride>
+    8 8</blockStride>
+  <cellSize>
+    8 8</cellSize>
+  <nbins>16</nbins>
+  <derivAperture>1</derivAperture>
+  <winSigma>4.</winSigma>
+  <histogramNormType>0</histogramNormType>
+  <L2HysThreshold>2.0000000000000001e-01</L2HysThreshold>
+  <gammaCorrection>0</gammaCorrection>
+  <nlevels>64</nlevels></MNISTHOG>
+</opencv_storage>

@@ -1,0 +1,19 @@
+In this project I have tried to solve the Titanic Classifier Problem of Kaggle using Different classifers with their Different Parameters
+
+The Result is,
+
+Knn Score 0.785634118967 with {'n_neighbors': 9, 'weights': 'distance', 'algorithm': 'brute'}
+
+LogReg Score 0.792368125701 with {'penalty': 'l2', 'tol': 0.0001}
+
+NN Score 0.792368125701 with {'activation': 'tanh', 'learning_rate': 'constant', 'solver': 'lbfgs'}
+
+SVM Score = 0.785 with {'kernel':'linear'}
+
+Decision Tree Score 0.79797979798 with {'splitter': 'best', 'criterion': 'gini'}
+
+RTrees Score 0.814814814815 wirth {'max_features': None, 'n_estimators': 30, 'criterion': 'gini'}
+
+Up until 23/04/17 I have tried with these Six Classifiers. 
+
+Note: To use SVM , you need to change the flag in to True. It is because SVM is the slowest of all in this project.
