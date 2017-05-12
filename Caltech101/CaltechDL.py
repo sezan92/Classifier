@@ -17,7 +17,7 @@ from os.path import isfile,join
 import numpy as np
 import cv2
 import tensorflow as tf
-
+import matplotlib.pyplot as plt
 #Functions
 def weight_variable(shape):
   initial = tf.truncated_normal(shape, stddev=0.1)
@@ -34,26 +34,26 @@ def max_pool_2x2(x):
   return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
                         strides=[1, 2, 2, 1], padding='SAME')
 
-def xbatchCreate(num_batch,trainNp):
-    batch = []
-    while num_batch in range(len(trainNp)):
-        batch.append(trainNp[num_batch])
-        num_batch= num_batch+120
-    return np.float32(batch)
+def num2name(num):
+    if num==1:
+        name= 'Ant'
+    elif num==2:
+        name = 'Beaver'
+    elif num==3:
+        name = 'Butterfly'
+    elif num==4:
+        name = 'Dolphin'
+    elif num==5:
+        name = 'Dalmatian'
+    return name
+print "Preparing Data"
 
-def ybatchCreate(num_batch,responseNp):
-    batch = []
-    while num_batch in range(len(responseNp)):
-        batch.append(responseNp[num_batch])
-        num_batch = num_batch+120
-    return np.float32(batch)
-
-Ant = '/home/sezan92/Caltech101/ant'
-Beaver = '/home/sezan92/Caltech101/beaver'
-Butterfly = '/home/sezan92/Caltech101/butterfly'
-Dalmatian = '/home/sezan92/Caltech101/dalmatian'
-Dolphin = '/home/sezan92/Caltech101/dolphin'
-Test ='/home/sezan92/Caltech101/Test'
+Ant = '/home/sezan92/Classifier/Caltech101/ant'
+Beaver = '/home/sezan92/Classifier/Caltech101/beaver'
+Butterfly = '/home/sezan92/Classifier/Caltech101/butterfly'
+Dalmatian = '/home/sezan92/Classifier/Caltech101/dalmatian'
+Dolphin = '/home/sezan92/Classifier/Caltech101/dolphin'
+Test ='/home/sezan92/Classifier/Caltech101/Test'
 trainData = []
 responseData = []
 NumberList = []
@@ -65,7 +65,7 @@ DolphinImages = [ f for f in listdir(Dolphin) if isfile(join(Dolphin,f)) ]
 DalmatianImages = [ f for f in listdir(Dalmatian) if isfile(join(Dalmatian,f)) ]
 TestImages = [ f for f in listdir(Test) if isfile(join(Test,f)) ]
 
-def ReadImages(ListName,FolderName,Label,size =(200,200)):
+def ReadImages(ListName,FolderName,Label,size =(48,48)):
     global NumberList
     global responseData
     global trainData
@@ -79,6 +79,7 @@ def ReadImages(ListName,FolderName,Label,size =(200,200)):
         img = cv2.resize(img,size)
         trainData.append(img.flatten())
         responseData.append(Label)
+print "Reading Images"
 
 ReadImages(AntImages,Ant,1)
 ReadImages(BeaverImages,Beaver,2)
@@ -86,7 +87,7 @@ ReadImages(ButterflyImages,Butterfly,3)
 ReadImages(DolphinImages,Dolphin,4)
 ReadImages(DalmatianImages,Dalmatian,5)
 
-Size = (200,200)
+Size = (48,48)
 trainNp = np.float32(trainData)
 responseNp = np.float32(responseData)
 responseNpOH = np.zeros((responseNp.shape[0],responseData[-1]))       
@@ -98,6 +99,10 @@ for i in range(responseNpOH.shape[0]):
 
 all_data = np.concatenate((trainNp,responseNpOH),axis=1) 
 np.random.shuffle(all_data)
+
+print "Data Ready"
+
+print "Starting Tensorflow"
 
 sess = tf.InteractiveSession()
 
@@ -148,7 +153,7 @@ sess.run(tf.global_variables_initializer())
 
 num_batch =0
 
-while num_batch<281:
+while num_batch<all_data.shape[0]:
   #batch = mnist.train.next_batch(50)
   if num_batch%10 == 0:
     train_accuracy = accuracy.eval(feed_dict={
@@ -160,4 +165,13 @@ while num_batch<281:
 
 
 
-
+for image in TestImages:
+    img = cv2.imread(join(Test,image))
+    img2 = cv2.resize(img,(48,48)).reshape((1,6912))
+    testData =img2
+    label = sess.run(y_conv,feed_dict={x:testData,keep_prob:1.0})
+    pred = np.argmax(label)+1
+    plt.figure()
+    plt.imshow(img)
+    plt.title(num2name(pred))
+    
